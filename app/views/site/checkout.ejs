@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+ <html>
+    <head>
+        <!-- SCRIPT PAGAR.ME -->
+        <script src="https://assets.pagar.me/checkout/checkout.js"></script>
+
+        <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+    </head>
+    <body>
+        <button id="pay-button">Abrir modal de pagamento</button>
+
+        <script>
+            $(document).ready(function() {
+                var button = $('#pay-button');
+
+                button.click(function() {
+
+                    // INICIAR A INSTÂNCIA DO CHECKOUT
+                    // declarando um callback de sucesso
+                    var checkout = new PagarMeCheckout.Checkout({"encryption_key":"ek_test_OWyQ8vmAWjS4fNEiU1klvmSEw2uKA2", success: function(data) {
+                        console.log(data['card_hash']);
+                        var dados = data;
+                        $.ajax({
+                             type: "POST",
+                             url: "capture",
+                             data: {card: dados['card_hash']},
+                        });
+                    }
+                        //Tratar aqui as ações de callback do checkout, como exibição de mensagem ou envio de token para captura da transação
+                    });
+
+                    // DEFINIR AS OPÇÕES
+                    // e abrir o modal
+                    // É necessário passar os valores boolean em "var params" como string
+                    var params = {
+                      "amount":1000,
+                      "buttonText":"Pagar",
+                      "customerData":"false",
+                      "paymentMethods":"credit_card, boleto",
+                      "maxInstallments":12,
+                      "uiColor":"#bababa",
+                      "postbackUrl":"https://requestb.in/183wlcz1",
+                      "postback_url":"https://requestb.in/183wlcz1",
+                      "createToken":"false",
+                      "async":"true",
+                      "interestRate":12,
+                      "freeInstallments":3,
+                      "defaultInstallment":5,
+                      "headerText":"Título",
+                      "customerName":"Leonardo Moura Barbosa",
+                      "customerDocumentNumber": "05654177974",
+                      "customerEmail": "qweqweqweqwe@mail.com",
+                      "customerAddressZipcode":"01026000",
+                      "customerAddressStreetNumber":"925",
+                      "customerAddressStreet":"Av senador queiros",
+                      "customerAddressNeighborhood":"centro",
+                      "customerPhoneDdd":"11",
+                      "customerPhoneNumber":"963739504"
+                    };
+                    checkout.open(params);
+                });
+            });
+        </script>
+    </body>
+</html>
